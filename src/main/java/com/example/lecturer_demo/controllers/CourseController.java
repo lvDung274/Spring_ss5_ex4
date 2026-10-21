@@ -22,17 +22,17 @@ public class CourseController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<PageResponse<CourseResponse>>> getCourses(
+    public ResponseEntity<ApiResponse<PageResponse<CourseResponseV2>>> getCourses(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String sortBy,
             @RequestParam(defaultValue = "DESC") Sort.Direction direction,
             @RequestParam(defaultValue = "ACTIVE") CourseStatus status) {
-        PageResponse<CourseResponse> pagedResult = courseService.getPagedCoursesByStatus(page, size, sortBy, direction, status);
+        PageResponse<CourseResponseV2> pagedResult = courseService.getPagedCoursesByStatusV2(page, size, sortBy, direction, status);
 
-        ApiResponse<PageResponse<CourseResponse>> apiResponse = new ApiResponse<>();
+        ApiResponse<PageResponse<CourseResponseV2>> apiResponse = new ApiResponse<>();
         apiResponse.setSuccess(true);
-        apiResponse.setMessage("Lấy danh sách khóa học theo trạng thái thành công");
+        apiResponse.setMessage("Lấy danh sách khóa học V2 thành công");
         apiResponse.setData(pagedResult);
 
         return ResponseEntity.ok(apiResponse);

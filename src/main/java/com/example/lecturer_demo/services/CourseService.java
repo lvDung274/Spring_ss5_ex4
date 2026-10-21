@@ -84,7 +84,7 @@ public class CourseService {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy khóa học với ID: " + id));
         courseRepository.delete(existing);
     }
-    public PageResponse<CourseResponse> getPagedCoursesByStatus(
+    public PageResponse<CourseResponseV2> getPagedCoursesByStatusV2(
             int page, int size, String sortBy, Sort.Direction direction, CourseStatus status) {
         if (page < 0) {
             page = 0;
@@ -95,32 +95,15 @@ public class CourseService {
         }
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
-        Page<Course> coursePage = courseRepository.findAllByStatus(status, pageable);
 
-        Page<CourseResponse> courseResponsePage = coursePage.map(course -> {
-            CourseInstructorResponse instructorResponse = null;
-            if (course.getInstructor() != null) {
-                instructorResponse = new CourseInstructorResponse(
-                        course.getInstructor().getId(),
-                        course.getInstructor().getName()
-                );
-            }
-
-            return new CourseResponse(
-                    course.getId(),
-                    course.getTitle(),
-                    course.getStatus(),
-                    instructorResponse
-            );
-        });
-
-        return PageResponse.<CourseResponse>builder()
-                .items(courseResponsePage.getContent())
-                .page(courseResponsePage.getNumber())
-                .size(courseResponsePage.getSize())
-                .totalItems(courseResponsePage.getTotalElements())
-                .totalPages(courseResponsePage.getTotalPages())
-                .isLast(courseResponsePage.isLast())
+        Page<CourseResponseV2> coursePage = courseRepository.findAllByStatusV2(status, pageable);
+        return PageResponse.<CourseResponseV2>builder()
+                .items(coursePage.getContent())
+                .page(coursePage.getNumber())
+                .size(coursePage.getSize())
+                .totalItems(coursePage.getTotalElements())
+                .totalPages(coursePage.getTotalPages())
+                .isLast(coursePage.isLast())
                 .build();
     }
 }
